@@ -58,6 +58,9 @@
  *
  * 2014-January-15  Jason Rohrer
  * Added support for moving a post to the top.
+ *
+ * 2024-December-2  Jason Rohrer
+ * Fixed all errors caused by mysql_ deprecations in latest PHP versions.
  */
 
 
@@ -111,7 +114,9 @@ $setup_footer = "
 //           into a MySQL database query.
 $use_magic_quotes = 1;
 
-if( get_magic_quotes_gpc() && !$use_magic_quotes ) {
+if( function_exists( "get_magic_quotes_gpc" ) &&
+    get_magic_quotes_gpc() && !$use_magic_quotes ) {
+    
     // force magic quotes to be removed
     $_GET     = array_map( 'sb_stripslashes_deep', $_GET );
     $_POST    = array_map( 'sb_stripslashes_deep', $_POST );
@@ -233,7 +238,7 @@ function seedBlogs_showLoginBox() {
                 "SELECT COUNT(*) FROM $tableNamePrefix"."users ".
                 "WHERE approved = '0';";
             $result = sb_queryDatabase( $query );
-            $pendingCount = mysql_result( $result, 0, 0 );
+            $pendingCount = sb_mysqli_result( $result, 0, 0 );
         
             sb_closeDatabase();
 
@@ -253,7 +258,7 @@ function seedBlogs_showLoginBox() {
                 "SELECT COUNT(*) FROM $tableNamePrefix"."posts ".
                 "WHERE approved = '0' AND removed = '0';";
             $result = sb_queryDatabase( $query );
-            $pendingCount = mysql_result( $result, 0, 0 );
+            $pendingCount = sb_mysqli_result( $result, 0, 0 );
         
             sb_closeDatabase();
 
@@ -485,7 +490,7 @@ function seedBlogFormatted( $inBlogName,
             "WHERE approved = \"0\" AND removed = \"0\" AND ".
             "blog_name = \"$inBlogName\";";
         $result = sb_queryDatabase( $query );
-        $pendingCount = mysql_result( $result, 0, 0 );
+        $pendingCount = sb_mysqli_result( $result, 0, 0 );
         
         sb_closeDatabase();
 
@@ -543,7 +548,7 @@ function seedBlogFormatted( $inBlogName,
     
     sb_closeDatabase();
     
-    $numRows = mysql_numrows( $result );
+    $numRows = mysqli_numrows( $result );
 
     if( $numRows == 0 ) {
         echo "[no posts]<BR>";
@@ -560,7 +565,7 @@ function seedBlogFormatted( $inBlogName,
 
         $mapRaw = "";
         
-        if( mysql_numrows( $result ) == 0 ) {
+        if( mysqli_numrows( $result ) == 0 ) {
             // no order_map entry yet for this blog 
 
             // insert a new map containing an empty string
@@ -570,7 +575,7 @@ function seedBlogFormatted( $inBlogName,
             sb_queryDatabase( $mapQuery );
             }
         else {
-            $mapRaw = mysql_result( $result, 0, 0 );
+            $mapRaw = sb_mysqli_result( $result, 0, 0 );
             }
         
         sb_closeDatabase();        
@@ -633,15 +638,15 @@ function seedBlogFormatted( $inBlogName,
         
         if( $mapArray == NULL ) {
             // use the query results
-            $subject_line = mysql_result( $result, $i, "subject_line" );
-            $post_id = mysql_result( $result, $i, "post_id" );
-            $intro_text = mysql_result( $result, $i, "intro_text" );
-            $body_text = mysql_result( $result, $i, "body_text" );
+            $subject_line = sb_mysqli_result( $result, $i, "subject_line" );
+            $post_id = sb_mysqli_result( $result, $i, "post_id" );
+            $intro_text = sb_mysqli_result( $result, $i, "intro_text" );
+            $body_text = sb_mysqli_result( $result, $i, "body_text" );
 
-            $user_id = mysql_result( $result, $i, "user_id" );
-            $date = mysql_result( $result, $i, "creation_date" );
-            $allow_comments = mysql_result( $result, $i, "allow_comments" );
-            $show_permalink = mysql_result( $result, $i, "show_permalink" );
+            $user_id = sb_mysqli_result( $result, $i, "user_id" );
+            $date = sb_mysqli_result( $result, $i, "creation_date" );
+            $allow_comments = sb_mysqli_result( $result, $i, "allow_comments" );
+            $show_permalink = sb_mysqli_result( $result, $i, "show_permalink" );
             }
         else {
             // ignore query results
@@ -656,17 +661,17 @@ function seedBlogFormatted( $inBlogName,
             $singleResult = sb_queryDatabase( $query );
             sb_closeDatabase();
 
-            $subject_line = mysql_result( $singleResult, 0, "subject_line" );
-            $post_id = mysql_result( $singleResult, 0, "post_id" );
-            $intro_text = mysql_result( $singleResult, 0, "intro_text" );
-            $body_text = mysql_result( $singleResult, 0, "body_text" );
+            $subject_line = sb_mysqli_result( $singleResult, 0, "subject_line" );
+            $post_id = sb_mysqli_result( $singleResult, 0, "post_id" );
+            $intro_text = sb_mysqli_result( $singleResult, 0, "intro_text" );
+            $body_text = sb_mysqli_result( $singleResult, 0, "body_text" );
 
-            $user_id = mysql_result( $singleResult, 0, "user_id" );
-            $date = mysql_result( $singleResult, 0, "creation_date" );
+            $user_id = sb_mysqli_result( $singleResult, 0, "user_id" );
+            $date = sb_mysqli_result( $singleResult, 0, "creation_date" );
             $allow_comments =
-                mysql_result( $singleResult, 0, "allow_comments" );
+                sb_mysqli_result( $singleResult, 0, "allow_comments" );
             $show_permalink =
-                mysql_result( $singleResult, 0, "show_permalink" );
+                sb_mysqli_result( $singleResult, 0, "show_permalink" );
             }
 
         // trim leading/trailing whitespace
@@ -823,7 +828,7 @@ function seedBlogFormatted( $inBlogName,
                 "AND ( expiration_date > CURRENT_TIMESTAMP OR " .
                       "expiration_date IS NULL );";
             $result = sb_queryDatabase( $query );
-            $postCount = mysql_result( $result, 0, 0 );
+            $postCount = sb_mysqli_result( $result, 0, 0 );
             
             sb_closeDatabase();
             }
@@ -1322,7 +1327,7 @@ function sb_showRegisterForm( $inMessage ) {
         $result = sb_queryDatabase( $query );
         sb_closeDatabase();
 
-        $emailValue = mysql_result( $result, 0, "email" );
+        $emailValue = sb_mysqli_result( $result, 0, "email" );
         $editExisting = true;
         $buttonName = "Update";
         }
@@ -1425,19 +1430,19 @@ function sb_sendAdminNotice( $inMessage ) {
     sb_closeDatabase();
 
     
-    $numRows = mysql_numrows( $result );
+    $numRows = mysqli_numrows( $result );
 
     if( $numRows < 1 ) {
         // no admins
         return;
         }
     
-    $emailList = mysql_result( $result, 0, "email" );
-    $userIDList = mysql_result( $result, 0, "user_id" );
+    $emailList = sb_mysqli_result( $result, 0, "email" );
+    $userIDList = sb_mysqli_result( $result, 0, "user_id" );
     
     for( $i=1; $i<$numRows; $i++ ) {
-        $user_id = mysql_result( $result, $i, "user_id" );
-        $email = mysql_result( $result, $i, "email" );
+        $user_id = sb_mysqli_result( $result, $i, "user_id" );
+        $email = sb_mysqli_result( $result, $i, "email" );
 
         if( $i == $numRows - 1 ) {
             // last user, insert and before name in list
@@ -1517,7 +1522,7 @@ function sb_sendPasswordEmail() {
         
         sb_closeDatabase();
 
-        $numRows = mysql_numrows( $result );
+        $numRows = mysqli_numrows( $result );
 
         if( $numRows == 0 ) {
             sb_showPasswordHelpForm(
@@ -1529,9 +1534,9 @@ function sb_sendPasswordEmail() {
                 "You must provide a User ID." );
             }
         else {
-            $user_id = mysql_result( $result, 0, "user_id" );
-            $email = mysql_result( $result, 0, "email" );
-            $password_md5 = mysql_result( $result, 0, "password_md5" );
+            $user_id = sb_mysqli_result( $result, 0, "user_id" );
+            $email = sb_mysqli_result( $result, 0, "email" );
+            $password_md5 = sb_mysqli_result( $result, 0, "password_md5" );
 
             // compute a new, temporary password
             
@@ -1779,12 +1784,12 @@ function sb_showEditor( $inBlogName, $inPostID ) {
         
         $result = sb_queryDatabase( $query );
 
-        if( mysql_numrows( $result ) != 1 ) {
+        if( mysqli_numrows( $result ) != 1 ) {
             sb_closeDatabase();
             sb_fatalError( "Post $inPostID does not exist in database." );
             }
 
-        $row = mysql_fetch_array( $result, MYSQL_ASSOC );
+        $row = mysqli_fetch_array( $result, MYSQLI_ASSOC );
 
         $blog_name = $row[ "blog_name" ];
         $author_name = $row[ "user_id" ];
@@ -2279,8 +2284,8 @@ function sb_updatePost( $inBlogName, $inPostID ) {
 
             $result = sb_queryDatabase( $mapQuery );
 
-            if( mysql_numrows( $result ) == 1 ) {
-                $map = mysql_result( $result, 0, 0 );
+            if( mysqli_numrows( $result ) == 1 ) {
+                $map = sb_mysqli_result( $result, 0, 0 );
                 
                 // stick this post at the top of the list
                 $map = $post_id . "\n" . $map;
@@ -2454,8 +2459,8 @@ function sb_movePost( $inBlogName, $inPostID, $inMoveDirection ) {
 
     $postDidMove = true;
     
-    if( mysql_numrows( $result ) == 1 ) {
-        $map = mysql_result( $result, 0, 0 );
+    if( mysqli_numrows( $result ) == 1 ) {
+        $map = sb_mysqli_result( $result, 0, 0 );
 
 
         $mapArray = preg_split( "/\s+/", $map );
@@ -2560,12 +2565,12 @@ function sb_displayPost( $inPostID ) {
     
     $result = sb_queryDatabase( $query );
     
-    if( mysql_numrows( $result ) != 1 ) {
+    if( mysqli_numrows( $result ) != 1 ) {
         sb_closeDatabase();
         sb_fatalError( "Post $inPostID does not exist in database." );
         }
 
-    $row = mysql_fetch_array( $result, MYSQL_ASSOC );
+    $row = mysqli_fetch_array( $result, MYSQLI_ASSOC );
 
     $subject_line = $row[ "subject_line" ];
     $intro_text = $row[ "intro_text" ];
@@ -3084,7 +3089,7 @@ function sb_showPostQueue( $inBlogName ) {
     $result = sb_queryDatabase( $query );
     
         
-    $numRows = mysql_numrows( $result );
+    $numRows = mysqli_numrows( $result );
 
     global $currentColor, $altColor;
 
@@ -3143,10 +3148,10 @@ function sb_showPostQueue( $inBlogName ) {
         // restart color cycling
         sb_resetBGColors();
         
-        $blog_name = mysql_result( $result, $i, "blog_name" );
-        $subject_line = mysql_result( $result, $i, "subject_line" );
-        $post_id = mysql_result( $result, $i, "post_id" );
-        $author = mysql_result( $result, $i, "user_id" );
+        $blog_name = sb_mysqli_result( $result, $i, "blog_name" );
+        $subject_line = sb_mysqli_result( $result, $i, "subject_line" );
+        $post_id = sb_mysqli_result( $result, $i, "post_id" );
+        $author = sb_mysqli_result( $result, $i, "user_id" );
 
         $context = $blog_name;
 
@@ -3168,7 +3173,7 @@ function sb_showPostQueue( $inBlogName ) {
             $contextResult = sb_queryDatabase( $query );
 
             $context_subject_line =
-                mysql_result( $contextResult, 0, "subject_line" );
+                sb_mysqli_result( $contextResult, 0, "subject_line" );
 
             $context = "Comment to <A HREF=\"".
                 "seedBlogs.php?action=display_post" .
@@ -3249,7 +3254,7 @@ function sb_showAccountQueue() {
     
     sb_closeDatabase();
     
-    $numRows = mysql_numrows( $result );
+    $numRows = mysqli_numrows( $result );
 
     global $currentColor, $altColor;
 
@@ -3295,8 +3300,8 @@ function sb_showAccountQueue() {
         // restart color cycling
         sb_resetBGColors();
         
-        $user_id = mysql_result( $result, $i, "user_id" );
-        $email = mysql_result( $result, $i, "email" );
+        $user_id = sb_mysqli_result( $result, $i, "user_id" );
+        $email = sb_mysqli_result( $result, $i, "email" );
         
 
         echo "<TR><TD "; sb_printNextBGColor(); echo ">$user_id</TD>";
@@ -3356,7 +3361,7 @@ function sb_showAccountList() {
     
     sb_closeDatabase();
     
-    $numRows = mysql_numrows( $result );
+    $numRows = mysqli_numrows( $result );
 
     global $currentColor, $altColor;
 
@@ -3403,9 +3408,9 @@ function sb_showAccountList() {
         // restart color cycling
         sb_resetBGColors();
         
-        $user_id = mysql_result( $result, $i, "user_id" );
-        $email = mysql_result( $result, $i, "email" );
-        $administrator = mysql_result( $result, $i, "administrator" );
+        $user_id = sb_mysqli_result( $result, $i, "user_id" );
+        $email = sb_mysqli_result( $result, $i, "email" );
+        $administrator = sb_mysqli_result( $result, $i, "administrator" );
         
 
         echo "<TR><TD "; sb_printNextBGColor(); echo ">$user_id</TD>";
@@ -3481,7 +3486,7 @@ function sb_search() {
     
     sb_closeDatabase();
     
-    $numRows = mysql_numrows( $result );
+    $numRows = mysqli_numrows( $result );
 
     global $header, $footer;
 
@@ -3503,15 +3508,15 @@ function sb_search() {
     
     for( $i=0; $i<$numRows; $i++ ) {
 
-        $post_id = mysql_result( $result, $i, "post_id" );
-        $blog_name = mysql_result( $result, $i, "blog_name" );
-        $user_id = mysql_result( $result, $i, "user_id" );
-        $subject_line = mysql_result( $result, $i, "subject_line" );
-        $intro_text = mysql_result( $result, $i, "intro_text" );
-        $body_text = mysql_result( $result, $i, "body_text" );
-        $creation_date = mysql_result( $result, $i, "creation_date" );
-        $allow_comments = mysql_result( $result, $i, "allow_comments" );
-        $show_permalink = mysql_result( $result, $i, "show_permalink" );
+        $post_id = sb_mysqli_result( $result, $i, "post_id" );
+        $blog_name = sb_mysqli_result( $result, $i, "blog_name" );
+        $user_id = sb_mysqli_result( $result, $i, "user_id" );
+        $subject_line = sb_mysqli_result( $result, $i, "subject_line" );
+        $intro_text = sb_mysqli_result( $result, $i, "intro_text" );
+        $body_text = sb_mysqli_result( $result, $i, "body_text" );
+        $creation_date = sb_mysqli_result( $result, $i, "creation_date" );
+        $allow_comments = sb_mysqli_result( $result, $i, "allow_comments" );
+        $show_permalink = sb_mysqli_result( $result, $i, "show_permalink" );
 
         sb_generateStoryBlock( $blog_name,
                             $post_id,
@@ -3659,7 +3664,7 @@ function sb_generateStoryBlock( $inBlogName,
             
             sb_closeDatabase();
 
-            $approved = mysql_result( $result, 0, "approved" );
+            $approved = sb_mysqli_result( $result, 0, "approved" );
             
             if( $approved == 0 ) {
                 echo "[<A HREF=\"seedBlogs.php?action=approve_post" .
@@ -3836,7 +3841,7 @@ function sb_rssFeed() {
     
     sb_closeDatabase();
     
-    $numRows = mysql_numrows( $result );
+    $numRows = mysqli_numrows( $result );
 
     global $mainSiteURL, $fullSeedBlogsURL;
 
@@ -3863,11 +3868,11 @@ function sb_rssFeed() {
         $intro_text = "";
         $date = "";
 
-        $subject_line = mysql_result( $result, $i, "subject_line" );
-        $post_id = mysql_result( $result, $i, "post_id" );
-        $intro_text = mysql_result( $result, $i, "intro_text" );
+        $subject_line = sb_mysqli_result( $result, $i, "subject_line" );
+        $post_id = sb_mysqli_result( $result, $i, "post_id" );
+        $intro_text = sb_mysqli_result( $result, $i, "intro_text" );
         
-        $date = mysql_result( $result, $i, "creation_date" );
+        $date = sb_mysqli_result( $result, $i, "creation_date" );
 
         // trim leading/trailing whitespace
         $subject_line = trim( $subject_line );
@@ -3934,12 +3939,12 @@ function sb_showComments( $inPostID ) {
     
     $result = sb_queryDatabase( $query );
     
-    if( mysql_numrows( $result ) != 1 ) {
+    if( mysqli_numrows( $result ) != 1 ) {
         sb_closeDatabase();
         sb_fatalError( "Post $inPostID does not exist in database." );
         }
 
-    $row = mysql_fetch_array( $result, MYSQL_ASSOC );
+    $row = mysqli_fetch_array( $result, MYSQLI_ASSOC );
 
     $subject_line = $row[ "subject_line" ];
         
@@ -4016,7 +4021,7 @@ function sb_countComments( $inPostID, $inApproved = 1 ) {
     sb_connectToDatabase();
     
     $result = sb_queryDatabase( $query );
-    $count = mysql_result( $result, 0, 0 );
+    $count = sb_mysqli_result( $result, 0, 0 );
         
     sb_closeDatabase();
 
@@ -4024,6 +4029,7 @@ function sb_countComments( $inPostID, $inApproved = 1 ) {
     }
 
 
+$sb_mysqlLink;
 
 // general-purpose functions down here, many copied from NCN
 
@@ -4032,16 +4038,18 @@ function sb_countComments( $inPostID, $inApproved = 1 ) {
  */  
 function sb_connectToDatabase() {
     global $databaseServer,
-        $databaseUsername, $databasePassword, $databaseName;
+        $databaseUsername, $databasePassword, $databaseName,
+        $sb_mysqlLink;
     
     
-    mysql_connect( $databaseServer, $databaseUsername, $databasePassword )
+    $sb_mysqlLink =
+        mysqli_connect( $databaseServer, $databaseUsername, $databasePassword )
         or sb_fatalError( "Could not connect to database server: " .
-                       mysql_error() );
+                       mysqli_error( $sb_mysqlLink ) );
     
-	mysql_select_db( $databaseName )
+	mysqli_select_db( $sb_mysqlLink, $databaseName )
         or sb_fatalError( "Could not select $databaseName database: " .
-                       mysql_error() );
+                       mysqli_error( $sb_mysqlLink ) );
     }
 
 
@@ -4050,7 +4058,9 @@ function sb_connectToDatabase() {
  * Closes the database connection.
  */
 function sb_closeDatabase() {
-    mysql_close();
+    global $sb_mysqlLink;
+    
+    mysqli_close( $sb_mysqlLink );
     }
 
 
@@ -4063,13 +4073,25 @@ function sb_closeDatabase() {
  * @return a result handle that can be passed to other mysql functions.
  */
 function sb_queryDatabase( $inQueryString ) {
-
-    $result = mysql_query( $inQueryString )
+    global $sb_mysqlLink;
+    
+    $result = mysqli_query( $sb_mysqlLink, $inQueryString )
         or sb_fatalError( "Database query failed:<BR>$inQueryString<BR><BR>" .
-                       mysql_error() );
+                       mysqli_error( $sb_mysqlLink ) );
 
     return $result;
-    } 
+    }
+
+
+/**
+ * Replacement for the old sb_mysqli_result function.
+ */
+function sb_mysqli_result( $result, $number, $field=0 ) {
+    mysqli_data_seek( $result, $number );
+    $row = mysqli_fetch_array( $result );
+    return $row[ $field ];
+    }
+
 
 
 /**
@@ -4086,12 +4108,12 @@ function sb_doesTableExist( $inTableName ) {
     $query = "SHOW TABLES";
     $result = sb_queryDatabase( $query );
 
-    $numRows = mysql_numrows( $result );
+    $numRows = mysqli_numrows( $result );
 
 
     for( $i=0; $i<$numRows && ! $tableExists; $i++ ) {
 
-        $tableName = mysql_result( $result, $i, 0 );
+        $tableName = sb_mysqli_result( $result, $i, 0 );
         
         if( strcmp( $tableName, $inTableName ) == 0 ) {
             $tableExists = 1;
@@ -4406,7 +4428,7 @@ function sb_getUniquePostID() {
 
         $result = sb_queryDatabase( $query );
 
-        $numRows = mysql_numrows( $result );
+        $numRows = mysqli_numrows( $result );
 
         if( $numRows == 0 ) {
             // found a unique ID
@@ -4566,7 +4588,7 @@ function sb_doesUserExist( $user_id ) {
     sb_closeDatabase();
         
     
-    $numRows = mysql_numrows( $result );
+    $numRows = mysqli_numrows( $result );
 
     if( $numRows == 1 ) {
         return 1;
@@ -4620,11 +4642,11 @@ function sb_getUserDatabaseField( $user_id, $fieldName ) {
     sb_closeDatabase();
         
     
-    $numRows = mysql_numrows( $result );
+    $numRows = mysqli_numrows( $result );
 
     if( $numRows == 1 ) {
 
-        $fieldValue = mysql_result( $result, 0, $fieldName );
+        $fieldValue = sb_mysqli_result( $result, 0, $fieldName );
         return $fieldValue;
         }
     else {
@@ -4653,11 +4675,11 @@ function sb_getPostDatabaseField( $post_id, $fieldName ) {
     sb_closeDatabase();
         
     
-    $numRows = mysql_numrows( $result );
+    $numRows = mysqli_numrows( $result );
 
     if( $numRows == 1 ) {
 
-        $fieldValue = mysql_result( $result, 0, $fieldName );
+        $fieldValue = sb_mysqli_result( $result, 0, $fieldName );
         return $fieldValue;
         }
     else {
@@ -4829,7 +4851,7 @@ function sb_getUserCount() {
     sb_connectToDatabase();
     $result =
         sb_queryDatabase( "SELECT COUNT(*) FROM $tableNamePrefix"."users;" );
-    $userCount = mysql_result( $result, 0, 0 );
+    $userCount = sb_mysqli_result( $result, 0, 0 );
     sb_closeDatabase();
     
     return $userCount;
@@ -4891,7 +4913,7 @@ function sb_isPostVisible( $inPostID ) {
 
     $result = sb_queryDatabase( $query );
             
-    if( mysql_result( $result, 0, 0 ) == 1 ) {
+    if( sb_mysqli_result( $result, 0, 0 ) == 1 ) {
         return true;
         }
     else {
