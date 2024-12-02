@@ -123,7 +123,10 @@ if( function_exists( "get_magic_quotes_gpc" ) &&
     $_REQUEST = array_map( 'sb_stripslashes_deep', $_REQUEST );
     $_COOKIE  = array_map( 'sb_stripslashes_deep', $_COOKIE );
     }
-else if( !get_magic_quotes_gpc() && $use_magic_quotes ) {
+else if( ( ! function_exists( "get_magic_quotes_gpc" ) ||
+           !get_magic_quotes_gpc() )
+         && $use_magic_quotes ) {
+    
     // force magic quotes to be added
     $_GET     = array_map( 'sb_addslashes_deep', $_GET );
     $_POST    = array_map( 'sb_addslashes_deep', $_POST );
@@ -142,10 +145,12 @@ $return_url = NULL;
 
 // ignore cookies if $loggedInID already set by another part of the script
 global $loggedInID;
+$loggedInID = "";
 
 
 // set by the logout script to tell us to ignore cookies
 global $justLoggedOut;
+$justLoggedOut = false;
 
 
 $cookieName = $tableNamePrefix . "cookie";
@@ -548,7 +553,7 @@ function seedBlogFormatted( $inBlogName,
     
     sb_closeDatabase();
     
-    $numRows = mysqli_numrows( $result );
+    $numRows = mysqli_num_rows( $result );
 
     if( $numRows == 0 ) {
         echo "[no posts]<BR>";
@@ -565,7 +570,7 @@ function seedBlogFormatted( $inBlogName,
 
         $mapRaw = "";
         
-        if( mysqli_numrows( $result ) == 0 ) {
+        if( mysqli_num_rows( $result ) == 0 ) {
             // no order_map entry yet for this blog 
 
             // insert a new map containing an empty string
@@ -702,9 +707,12 @@ function seedBlogFormatted( $inBlogName,
                 $showUpDownWidgets;
 
             // show down widget if we are up from the bottom
-            $showDownWidget =
-                ( $index < count( $mapArray ) - 1 ) &&
-                $showUpDownWidgets;
+            $showDownWidget = ( $index < $numRows - 1 ) && $showUpDownWidgets;
+
+            if( $mapArray != NULL ) {
+                $showDownWidget = ( $index < count( $mapArray ) - 1 ) &&
+                    $showUpDownWidgets;
+                }
 
             sb_generateStoryBlock( $inBlogName,
                                            $post_id,
@@ -1430,7 +1438,7 @@ function sb_sendAdminNotice( $inMessage ) {
     sb_closeDatabase();
 
     
-    $numRows = mysqli_numrows( $result );
+    $numRows = mysqli_num_rows( $result );
 
     if( $numRows < 1 ) {
         // no admins
@@ -1522,7 +1530,7 @@ function sb_sendPasswordEmail() {
         
         sb_closeDatabase();
 
-        $numRows = mysqli_numrows( $result );
+        $numRows = mysqli_num_rows( $result );
 
         if( $numRows == 0 ) {
             sb_showPasswordHelpForm(
@@ -1784,7 +1792,7 @@ function sb_showEditor( $inBlogName, $inPostID ) {
         
         $result = sb_queryDatabase( $query );
 
-        if( mysqli_numrows( $result ) != 1 ) {
+        if( mysqli_num_rows( $result ) != 1 ) {
             sb_closeDatabase();
             sb_fatalError( "Post $inPostID does not exist in database." );
             }
@@ -2284,7 +2292,7 @@ function sb_updatePost( $inBlogName, $inPostID ) {
 
             $result = sb_queryDatabase( $mapQuery );
 
-            if( mysqli_numrows( $result ) == 1 ) {
+            if( mysqli_num_rows( $result ) == 1 ) {
                 $map = sb_mysqli_result( $result, 0, 0 );
                 
                 // stick this post at the top of the list
@@ -2459,7 +2467,7 @@ function sb_movePost( $inBlogName, $inPostID, $inMoveDirection ) {
 
     $postDidMove = true;
     
-    if( mysqli_numrows( $result ) == 1 ) {
+    if( mysqli_num_rows( $result ) == 1 ) {
         $map = sb_mysqli_result( $result, 0, 0 );
 
 
@@ -2565,7 +2573,7 @@ function sb_displayPost( $inPostID ) {
     
     $result = sb_queryDatabase( $query );
     
-    if( mysqli_numrows( $result ) != 1 ) {
+    if( mysqli_num_rows( $result ) != 1 ) {
         sb_closeDatabase();
         sb_fatalError( "Post $inPostID does not exist in database." );
         }
@@ -3089,7 +3097,7 @@ function sb_showPostQueue( $inBlogName ) {
     $result = sb_queryDatabase( $query );
     
         
-    $numRows = mysqli_numrows( $result );
+    $numRows = mysqli_num_rows( $result );
 
     global $currentColor, $altColor;
 
@@ -3254,7 +3262,7 @@ function sb_showAccountQueue() {
     
     sb_closeDatabase();
     
-    $numRows = mysqli_numrows( $result );
+    $numRows = mysqli_num_rows( $result );
 
     global $currentColor, $altColor;
 
@@ -3361,7 +3369,7 @@ function sb_showAccountList() {
     
     sb_closeDatabase();
     
-    $numRows = mysqli_numrows( $result );
+    $numRows = mysqli_num_rows( $result );
 
     global $currentColor, $altColor;
 
@@ -3486,7 +3494,7 @@ function sb_search() {
     
     sb_closeDatabase();
     
-    $numRows = mysqli_numrows( $result );
+    $numRows = mysqli_num_rows( $result );
 
     global $header, $footer;
 
@@ -3841,7 +3849,7 @@ function sb_rssFeed() {
     
     sb_closeDatabase();
     
-    $numRows = mysqli_numrows( $result );
+    $numRows = mysqli_num_rows( $result );
 
     global $mainSiteURL, $fullSeedBlogsURL;
 
@@ -3939,7 +3947,7 @@ function sb_showComments( $inPostID ) {
     
     $result = sb_queryDatabase( $query );
     
-    if( mysqli_numrows( $result ) != 1 ) {
+    if( mysqli_num_rows( $result ) != 1 ) {
         sb_closeDatabase();
         sb_fatalError( "Post $inPostID does not exist in database." );
         }
@@ -4108,7 +4116,7 @@ function sb_doesTableExist( $inTableName ) {
     $query = "SHOW TABLES";
     $result = sb_queryDatabase( $query );
 
-    $numRows = mysqli_numrows( $result );
+    $numRows = mysqli_num_rows( $result );
 
 
     for( $i=0; $i<$numRows && ! $tableExists; $i++ ) {
@@ -4428,7 +4436,7 @@ function sb_getUniquePostID() {
 
         $result = sb_queryDatabase( $query );
 
-        $numRows = mysqli_numrows( $result );
+        $numRows = mysqli_num_rows( $result );
 
         if( $numRows == 0 ) {
             // found a unique ID
@@ -4588,7 +4596,7 @@ function sb_doesUserExist( $user_id ) {
     sb_closeDatabase();
         
     
-    $numRows = mysqli_numrows( $result );
+    $numRows = mysqli_num_rows( $result );
 
     if( $numRows == 1 ) {
         return 1;
@@ -4642,7 +4650,7 @@ function sb_getUserDatabaseField( $user_id, $fieldName ) {
     sb_closeDatabase();
         
     
-    $numRows = mysqli_numrows( $result );
+    $numRows = mysqli_num_rows( $result );
 
     if( $numRows == 1 ) {
 
@@ -4675,7 +4683,7 @@ function sb_getPostDatabaseField( $post_id, $fieldName ) {
     sb_closeDatabase();
         
     
-    $numRows = mysqli_numrows( $result );
+    $numRows = mysqli_num_rows( $result );
 
     if( $numRows == 1 ) {
 
