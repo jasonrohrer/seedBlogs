@@ -4566,7 +4566,9 @@ function sb_getLoggedInUser() {
 
         // session ID in database is set and
         // it matches the cookie session ID
-        if( strcmp( $trueSessionID, "" ) != 0 &&
+        if( $trueSessionID != NULL &&
+            strcmp( $trueSessionID, "" ) != 0 &&
+            $cookie_session_id != NULL &&
             strcmp( $trueSessionID, $cookie_session_id ) == 0 ) {
 
             return $cookie_user_id;

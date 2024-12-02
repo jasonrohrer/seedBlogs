@@ -128,10 +128,10 @@ seedBlog(
 
 <?php
 // compute current timestamp and last restoration time
-connectToDatabase();
+sb_connectToDatabase();
 
-$result = queryDatabase( "SELECT CURRENT_TIMESTAMP;" );
-$sqlTimestamp = mysql_result( $result, 0, 0 );
+$result = sb_queryDatabase( "SELECT CURRENT_TIMESTAMP;" );
+$sqlTimestamp = sb_mysqli_result( $result, 0, 0 );
 
 $unixTimestamp = strtotime( $sqlTimestamp );
 // format as in    July 7, 2005 [4:52 pm]
@@ -140,14 +140,14 @@ $currentDateString = date( "F j, Y [g:i a]", $unixTimestamp );
 global $tableNamePrefix;
 $tableName = $tableNamePrefix . "refresh";
 
-$result = queryDatabase( "SELECT last_refresh_date FROM $tableName;" );
-$sqlTimestamp = mysql_result( $result, 0, 0 );
+$result = sb_queryDatabase( "SELECT last_refresh_date FROM $tableName;" );
+$sqlTimestamp = sb_mysqli_result( $result, 0, 0 );
 
 $unixTimestamp = strtotime( $sqlTimestamp );
 // format as in    July 7, 2005 [4:52 pm]
 $refreshDateString = date( "F j, Y [g:i a]", $unixTimestamp );
 
-closeDatabase();
+sb_closeDatabase();
 ?>
 
 <CENTER>
