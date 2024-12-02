@@ -1,0 +1,3 @@
+cp seedBlogs/doc/README.txt seedBlogs/doc/INSTALL.txt seedBlogs
+rm -r seedBlogs/doc
+rm -r seedBlogs/build

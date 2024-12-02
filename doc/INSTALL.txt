@@ -1,0 +1,169 @@
+These instructions describe how to set up seedBlogs to work with a MySQL
+database and your web server. 
+
+
+
+1.  Create a database account
+
+This step needs to be done by the administrator of your database.  Make
+sure your database admin grants the new user access and full privileges
+to whatever database you plan to create in step 2 below.
+
+NOTE:  This step can also be performed using a web-based tool like cPanel,
+which may work even if you do not have admin access to the database.  Many
+web hosts give you web-based account-creation capabilities.
+
+
+
+2.  Create the database
+
+Run mysql, specifying a database username that has been granted access to
+the database that you are going to create.  The -p flag will force password
+access.  In the following example, the username is jcr13:
+
+mysql -u jcr13 -p
+
+
+After logging in, create the seedBlogs database ("mysql>" indicates the 
+prompt):
+
+mysql> create database seedBlogs;
+
+MySQL should respond with:
+Query OK, 1 row affected (0.01 sec)
+
+Next, quit MySQL:
+
+mysql> quit
+
+NOTE:  This step can also be performed using a web-based tool like cPanel.
+
+
+
+3.  Configure the seedBlogs by editing settings.php
+
+
+Copy the seedBlogs.php and settings.php files into the main directory of your 
+website.
+
+Edit the top of the settings.php file to configure various settings variables.
+In particular, edit $databaseUsername, $databasePassword, and $databaseName
+so that seedBlogs can connect to your database.
+
+You also may want to create header.php and footer.php files at this time
+and put them in the same directory as the seedBlogs.php file.  seedBlogs will
+use these files whenever it displays one of its generated pages (for example,
+a list of search results).  By including the same header.php and footer.php
+in your main website, you can ensure that seedBlogs' custom pages have
+the same look and feel as the rest of your website.
+
+You may want to use the provided "skeleton_site" files as a template.  However,
+seedBlogs will work fine, especially for testing purposes, without header.php 
+and footer.php files.
+
+SECURITY NOTE:  Because the settings.php file contains your MySQL database
+password, you should take steps to ensure that this file cannot be read
+by untrusted individuals.  Most web servers are shared environments, and in
+these environments, all php files must be readable by the web server.  If
+you are not careful with file permissions, your seedBlogs.php file may
+also be readable by other accounts on your web server.  The best option is
+to change the group of your seedBlogs.php file so that matches the group
+of the web server and then make the file only readable by user (you)
+and group.  Depending on how your web server is set up, root access may
+be required to make this kind of group change.  Your web server administrators
+may or may not be willing to cooperate.  Even if you manage to restrict read
+access for other users, any script run by the web server (including those 
+being run on behalf of other users) will be able to read your seedBlogs.php 
+file.  Thus, a malicious script could be written by another user to obtain 
+your MySQL password.  There is currently no solution to this fundamental 
+security problem, at least in shared hosting environments.  You should 
+therefore implement a regular backup policy for your database.
+
+
+
+4.  Run through the web-based setup
+
+Suppose the URL to your seedBlogs script is:  http://myserver.com/seedBlogs.php
+
+Open this URL in your browser.  
+
+If your database is configured properly, seedBlogs will guide you through a 
+brief setup process.  This process includes the creation of tables in your 
+database and the creation of the first administrator account.
+
+After the admin account is created, you can use it to: 
+
+--edit all of the seedBlogs on your site
+--approve account requests
+--grant admin privileges to other accounts
+
+
+
+6.  Creating your first seedBlog
+
+Create an index.php file for your website and add the following PHP code to 
+create a seedBlog called "news" in the database and display it:
+
+<?php
+ include_once( "seedBlogs.php" );
+ seedBlog( "news", 1 );
+?>
+
+The "1" parameter tells seedBlogs to display a block of intro text for each
+post in the list.  Setting this parameter to 0 would display only headlines.
+
+This is the simplest way to create a seedBlog.  You can control more details of
+the seedBlog's behavior by passing additional parameters into this function.
+You can customize the appearance and layout of a seedBlog by calling the 
+function seedBlogFormatted.  You will need a few other function calls if you 
+want to allow users to log into your system and search your seedBlogs.
+
+In total, there are six seedBlogs function calls that you may want to use.
+Details about all of the functions are provided in the README file.   
+
+Note that the block of PHP code that includes seedBlogs.php must be the very 
+first thing in your file, or else the seedBlogs script will generate warnings.
+For now, just make sure that the the "<" from the <?php tag is the very first
+character in your index.php file.  The README file discusses this point in 
+more detail.  For example, your first seedBlogs-powered page might look like:
+
+
+<?php include_once( "seedBlogs.php" ); ?>
+
+<HTML>
+<HEAD><TITLE>My seedBlogs page</TITLE></HEAD>
+
+<BODY>
+
+Recent News:
+
+<?php seedBlog( "news", 1 ); ?>
+
+</BODY>
+</HTML>
+
+
+
+7.  Posting content
+
+Now that you have built a simple seedBlog, you can log into it as an 
+administrator and post some content.
+
+seedBlogs supports a set of mark-up tags called BBCode in all posts.  These 
+tags let you format text in various ways, and they also allow you to add links
+and images to your posts.  See http://www.phpbb.com/phpBB/faq.php?mode=bbcode
+for more information about BBCode.
+
+In seedBlogs post lists that have intro text hidden, posting a URL as the 
+intro text creates an external link to that URL.  For example, you might use
+seedBlogs to create a links list like this:
+
+<?php seedBlog( "my_links", 0 ); ?>
+
+For each post in this list, you would put the link anchor text in the Headline
+field (for example "Jason Rohrer's Homepage") and the URL in the Intro Text box
+(for example "http://jasonrohrer.n3.net").  seedBlogs detects one of these 
+inline links by looking for http:// at the beginning of the intro text, so
+make sure your URL is the very first piece of text in the introduction.
+
+

@@ -1,0 +1,189 @@
+September 1, 2005
+
+Added a flag to the database for each post to toggle permalinks.
+
+Old tables can be altered with the following MySQL query:
+
+
+ALTER TABLE posts ADD show_permalink TINYINT NOT NULL AFTER allow_comments;
+
+
+What about backup functions?
+
+Want to avoid using shell (mysqldump).
+
+
+Looked at implementation in phpMyAdmin.  Too complicated (manually select
+fields from tables and build up a text dump).
+
+People can use third-party back-up tools if they want.  No need to put this
+in seedBlogs.
+
+Ready for a release?
+
+
+
+September 6, 2005
+
+Testing candidate release.
+
+Installed from scratch at http://northcountrynotes.org/sb_test
+
+On step 6 of INSTALL.txt
+
+
+September 8, 2005
+
+Finished testing install procedure.
+
+Time to test demo site.
+
+Tested the demo site installation.
+
+It works fine.
+
+Fixed a few bugs and inconsistencies.
+
+Should make a script for demo site that will remove the old tables.  Done.
+
+
+Testing demo site in Dillo and other browsers.  Fixed a few HTML bugs.
+
+Testing on Mac Classic IE, found an IE-specific cookie bug.  Dealt with it.
+
+Ready for release.
+
+Released on SF.
+
+Tagging all files as seedBlogs-0_1
+
+
+
+
+September 18, 2005
+
+When installing/testing the Seedcorn site on Azimuth's servers, I ran into
+several undefined variable notices.  Some of these were being sent out before
+the cookie headers, so they were completely hosing page generation.
+
+I fixed all of these and am posting a new release on SF.  0.1.1
+
+Released on SF.
+
+Tagging all files as seedBlogs-0_1_1
+
+
+
+September 20, 2005
+
+When testing the new (free) Opera newsreader against my worklog, I noticed
+a few things about the RSS feed:
+
+--Post text was being sent as one solid block with no paragraph breaks or other
+  formatting.
+
+--All post dates for the feed were being set to the date that the reader
+  fetched the feed.
+
+
+Fixed both of these issues.  The feed now looks really good in Opera's 
+newsreader.
+
+Releasing 0.1.2 on SF.
+
+Tagging all files as seedBlogs-0_1_2
+
+
+
+September 22, 2005
+
+Almost done with new website.
+
+Good program for dealing with windows .ico files on linux:  xpm2ico
+
+Still need to spellcheck.  Done.
+
+
+September 25, 2005
+
+Fixed a bullet-spacing issue on seedBlogs site.
+
+Ready to post to Freshmeat.
+
+
+Short description:
+A PHP/MySQL module for plugging blocks of dynamic content into any website.
+
+Long description:
+seedBlogs is a modular building block that lets you add PHP- and MySQL-backed dynamic content to any website.  If you have ever wasted time trying to get an "out of the box" CMS to look how you want it to look and do what you want it to do, then seedBlogs is for you.  With seedBlogs, you design and build your website however you want---seedBlogs simply handles the dynamic part.  You can plug seedBlogs modules into your website wherever you want lists of posts (or books, or news, or quotes, or whatever) to appear.   With very little effort, you can create a customized website that you and your organization can update and edit from the web.
+
+Submitted.
+
+
+October 11, 2005
+
+
+November 21, 2005
+
+No way in current BBCode to center a small block of text that is internally
+left-justified.
+
+Adding a new tag, [centerblock] [/centerblock] to do this.
+
+
+
+March 16, 2006
+
+Noticed some problems with the seedcorn installation:
+
+1)  Email messages (like password reminders) are not being sent out.
+
+2)  Stale session IDs are blocking password requests that use email addresses
+(fixed this)
+
+Looks like emails are actually being sent out, but spam filters (or slow
+relays) are blocking them for certain addresses (like sf.net addresses).
+
+Should check error when sending emails, but this is not high priority (and
+it should be done everywhere that we call the mail function).  
+Don't change this now.
+
+On the seedcorn site, stuff that needs admin approval sits forever without
+being noticed.
+
+Should have option for emailing admins when stuff waits for approval.
+
+
+
+To do:
+x-Remove check for session ID before resetting password based on email address.
+x-Add option for emailing admins when new pending submissions are added.
+--Dillo is now flagging literal use of & (like in HREF URLs that contain
+  query variables) as errors.  Looking at HTML docs, it looks like & should
+  never occur in HTML as a literal and should always be replaced with &amp;
+  However, common practice seems to put amps into HREF URLs as literals.
+  Look into this.
+--Add Cancel button next to Post and Update to avoid confusion ("All I can do
+  is Post?  But I don't want to post!")
+--What if a post in a list view has empty headline text?  Then it is not 
+  clickable (and therefore not editable).
+--To make seedBlogs more flexible, how 'bout adding the ability to create
+  a seedBlog right in the middle of a seedBlog post (like a BB code tag
+  to create a seedBlog with some particular name...)
+--Some of the bbCode tags don't work in non-CSS browsers, since the tags
+  render to HTML as CSS.
+X-Add an "approve" link when viewing a pending post as the admin.
+  (otherwise, you have to navigate back to the queue or go to the edit
+   page).
+X-Add some kind of central list of posts that need approval.
+--Add checkboxes with Approve Marked and Remove Marked buttons for approval
+  queues.
+X-Change so that comments are displayed oldest first (otherwise, it's hard
+  to see which comments respond to other comments).
+x-Fix cookie-setting bug where mainSiteURL is different from the URL that the
+  user is currently accessing the site through (http://seedcorn.org vs 
+  http://www.seedcorn.org  --- if cookie gets set for seedcorn.org and then
+  we redirect to www.seedcorn.org, cookie is lost).
+  Maybe redirect to return URL instead.
+X-Add function for getting version of seedBlogs script.
+X-Change headline-formatting to give more control over link appearance.

@@ -1,0 +1,173 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN"
+"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd"
+[
+ <!ATTLIST svg
+  xmlns:xlink CDATA #FIXED "http://www.w3.org/1999/xlink">
+]>
+<!-- Created with Sodipodi ("http://www.sodipodi.com/") -->
+<svg
+   style="fill:#000000;fill-opacity:0.5;stroke:none"
+   width="595.275591"
+   height="841.889764"
+   id="svg1"
+   sodipodi:docname="/var/www/jcr13/seedBlogs/doc/artwork/anatomy_blank.sodi"
+   sodipodi:version="0.28"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   sodipodi:docbase="/var/www/jcr13/seedBlogs/doc/artwork/">
+  <defs
+     id="defs3">
+    <linearGradient
+       id="linearGradient22">
+      <stop
+         style="stop-color:#ff0000;stop-opacity:0.74902;"
+         offset="0.000000"
+         id="stop23" />
+      <stop
+         style="stop-color:#ffffdc;stop-opacity:1;"
+         offset="1.000000"
+         id="stop24" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient18">
+      <stop
+         style="stop-color:#000;stop-opacity:1;"
+         offset="0"
+         id="stop19" />
+      <stop
+         style="stop-color:#fff;stop-opacity:1;"
+         offset="1"
+         id="stop20" />
+    </linearGradient>
+    <linearGradient
+       xlink:href="#linearGradient22"
+       id="linearGradient21"
+       x1="0.989851"
+       y1="0.453127"
+       x2="0.0203046"
+       y2="0.453125"
+       gradientUnits="objectBoundingBox"
+       gradientTransform="scale(1,1)"
+       spreadMethod="pad" />
+    <linearGradient
+       x1="0.0588232"
+       y1="0.421868"
+       x2="0.941176"
+       y2="0.421875"
+       xlink:href="#linearGradient22"
+       id="linearGradient27"
+       gradientUnits="objectBoundingBox"
+       gradientTransform="scale(1,0.999999)"
+       spreadMethod="pad" />
+    <linearGradient
+       x1="0.507692"
+       y1="0.953128"
+       x2="0.507692"
+       y2="0.0234376"
+       xlink:href="#linearGradient22"
+       id="linearGradient30"
+       gradientUnits="objectBoundingBox"
+       gradientTransform="scale(1,0.999999)"
+       spreadMethod="pad" />
+    <linearGradient
+       x1="0.55556"
+       y1="0.00781251"
+       x2="0.55556"
+       y2="0.976562"
+       xlink:href="#linearGradient22"
+       id="linearGradient32"
+       gradientUnits="objectBoundingBox"
+       gradientTransform="scale(1,1)"
+       spreadMethod="pad" />
+  </defs>
+  <sodipodi:namedview
+     id="base" />
+  <image
+     xlink:href="whole_demo.png"
+     sodipodi:absref="/var/www/jcr13/seedBlogs/doc/artwork/whole_demo.png"
+     width="974.000000"
+     height="1136.000000"
+     id="image4" />
+  <rect
+     style="stroke:#ff0000;fill:none;fill-opacity:1;fill-rule:evenodd;stroke-opacity:0.75;stroke-width:10pt;stroke-linejoin:miter;stroke-linecap:butt;"
+     id="rect11"
+     x="185.385827"
+     y="562.596176"
+     width="424.953881"
+     height="459.698538"
+     rx="0.000000"
+     ry="0.000000" />
+  <rect
+     style="stroke:#ff0000;fill:none;fill-opacity:1;fill-rule:evenodd;stroke-opacity:0.75;stroke-width:10pt;stroke-linejoin:miter;stroke-linecap:butt;"
+     id="rect12"
+     x="174.695163"
+     y="78.843645"
+     width="403.473566"
+     height="435.644545"
+     rx="0.000000"
+     ry="0.000000" />
+  <rect
+     style="stroke:#ff0000;fill:none;fill-opacity:1;fill-rule:evenodd;stroke-opacity:0.75;stroke-width:10pt;stroke-linejoin:miter;stroke-linecap:butt;"
+     id="rect13"
+     x="595.986501"
+     y="408.076491"
+     width="195.797526"
+     height="74.042746"
+     rx="0.000000"
+     ry="0.000000" />
+  <rect
+     style="stroke:#ff0000;fill:none;fill-opacity:1;fill-rule:evenodd;stroke-opacity:0.75;stroke-width:10pt;stroke-linejoin:miter;stroke-linecap:butt;"
+     id="rect14"
+     x="594.501686"
+     y="191.689540"
+     width="203.716536"
+     height="181.741283"
+     rx="0.000000"
+     ry="0.000000" />
+  <rect
+     style="stroke:#ff0000;fill:none;fill-opacity:1;fill-rule:evenodd;stroke-opacity:0.75;stroke-width:10pt;stroke-linejoin:miter;stroke-linecap:butt;"
+     id="rect15"
+     x="594.600674"
+     y="73.300339"
+     width="195.005625"
+     height="53.651294"
+     rx="0.000000"
+     ry="0.000000" />
+  <path
+     style="fill:none;fill-rule:evenodd;stroke:url(#linearGradient21);stroke-opacity:1;stroke-width:25;stroke-linejoin:miter;stroke-linecap:butt;fill-opacity:1;stroke-dasharray:none;"
+     d="M 184.708 598.933 C 126.819 604.176 189.146 683.953 109.002 681.821 "
+     id="path17"
+     sodipodi:nodetypes="cc" />
+  <path
+     style="fill:none;fill-rule:evenodd;stroke:url(#linearGradient21);stroke-opacity:1;stroke-width:25;stroke-linejoin:miter;stroke-linecap:butt;fill-opacity:1;stroke-dasharray:none;"
+     d="M 183.439 657.312 C 113.471 656.278 190.916 734.051 123.251 725.533 "
+     id="path25"
+     sodipodi:nodetypes="cc"
+     transform="translate(-10.6232,-541.784)" />
+  <path
+     style="fill:none;fill-rule:evenodd;stroke:url(#linearGradient27);stroke-opacity:1;stroke-width:25;stroke-linejoin:miter;stroke-linecap:butt;fill-opacity:1;stroke-dasharray:none;"
+     d="M -12.3923 345.008 C -10.0109 416.465 6.55268 824.745 112.785 819.433 "
+     id="path26"
+     sodipodi:nodetypes="cc"
+     transform="translate(762.216,140.758)" />
+  <path
+     style="fill:none;fill-rule:evenodd;stroke:url(#linearGradient27);stroke-opacity:1;stroke-width:25;stroke-linejoin:miter;stroke-linecap:butt;fill-opacity:1;stroke-dasharray:none;"
+     d="M 39.4033 136.774 C 74.9456 137.792 51.2962 84.876 90.0373 86.2003 "
+     id="path28"
+     sodipodi:nodetypes="cc"
+     transform="translate(762.216,140.758)" />
+  <path
+     style="fill:none;fill-rule:evenodd;stroke:url(#linearGradient30);stroke-opacity:1;stroke-width:25;stroke-linejoin:miter;stroke-linecap:butt;fill-opacity:1;stroke-dasharray:none;"
+     d="M -34.8073 -71.6477 C -33.2785 -105.912 -30.2027 -104.786 -36.5232 -128.923 "
+     id="path29"
+     sodipodi:nodetypes="cc"
+     transform="translate(762.216,140.758)" />
+  <path
+     style="fill:none;fill-rule:evenodd;stroke:url(#linearGradient32);stroke-opacity:1;stroke-width:25;stroke-linejoin:miter;stroke-linecap:round;fill-opacity:1;stroke-dasharray:none;"
+     d="M 4.53486 -70.7962 C 6.06366 -134.249 -121.578 -74.3276 -116.477 -122.577 "
+     id="path31"
+     sodipodi:nodetypes="cc"
+     transform="translate(347.22,1192.85)" />
+</svg>
